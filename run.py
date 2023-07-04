@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1, './BoostingMonocularDepth')
+
 from operator import getitem
 from torchvision.transforms import Compose
 from torchvision.transforms import transforms
@@ -48,7 +51,7 @@ def run(dataset, option):
     opt = TestOptions().parse()
     global pix2pixmodel
     pix2pixmodel = Pix2Pix4DepthModel(opt)
-    pix2pixmodel.save_dir = './pix2pix/checkpoints/mergemodel'
+    pix2pixmodel.save_dir = option.pix2pix_model_dir # './pix2pix/checkpoints/mergemodel'
     pix2pixmodel.load_networks('latest')
     pix2pixmodel.eval()
 
@@ -68,7 +71,7 @@ def run(dataset, option):
         srlnet.eval()
     elif option.depthNet == 2:
         global leresmodel
-        leres_model_path = "res101.pth"
+        leres_model_path = option.leres_model_path # "res101.pth"
         checkpoint = torch.load(leres_model_path)
         leresmodel = RelDepthModel(backbone='resnext101')
         leresmodel.load_state_dict(strip_prefix_if_present(checkpoint['depth_model'], "module."),
